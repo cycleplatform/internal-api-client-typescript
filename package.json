@@ -1,6 +1,6 @@
 {
     "name": "@cycleplatform/internal-api-client",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A Cycle API client for the internal API inside a container on Cycle.",
     "main": "./dist/index.umd.cjs",
     "module": "./dist/index.js",
