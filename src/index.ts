@@ -23,15 +23,19 @@ export function getClient({
         },
     });
 
-    const socketFetch: typeof fetch = (input, init) => {
-        return undiciFetch(input as any, {
-            ...(init as any),
+    const socketFetch: typeof fetch = (input) => {
+        const req = input as Request;
+        return undiciFetch(req.url, {
+            method: req.method,
+            headers: Object.fromEntries(req.headers.entries()),
+            body: req.body,
+            duplex: "half",
             dispatcher: agent,
         }) as unknown as Promise<Response>;
     };
 
-    // baseUrl host is arbitrary. The dispatcher routes to the socket,
-    // not DNS. It just needs to be a valid absolute URL so paths resolve.
+    // baseUrl host is arbitrary. The dispatcher routes to the socket, not DNS.
+    // It just needs to be a valid absolute URL so operation paths resolve.
     const client = createClient<paths>({
         baseUrl: "http://localhost",
         fetch: socketFetch,
