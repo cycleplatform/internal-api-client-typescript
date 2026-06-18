@@ -22,7 +22,7 @@
         "dist"
     ],
     "scripts": {
-        "test": "vitest",
+        "test": "vitest run --passWithNoTests",
         "test:ts": "tsc --noEmit",
         "build:client": "openapi-typescript ./api-spec/internal/api.yml --output ./src/generated/types.ts",
         "build:lib": "npm run build:client && vite build",
