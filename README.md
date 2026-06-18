@@ -45,7 +45,7 @@ console.log(resp.data, resp.error);
 By default the client connects to the socket at `/var/run/cycle/api/api.sock`. You can override this with the `socketPath` option:
 
 ```ts
-const client = getInternalClient({
+const client = getClient({
     token: process.env.CYCLE_API_TOKEN,
     socketPath: "/custom/path/api.sock",
 });
