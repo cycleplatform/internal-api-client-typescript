@@ -27,9 +27,7 @@ The internal API authenticates using the token provided to the instance through 
 ```ts
 import { getClient } from "@cycleplatform/internal-api-client";
 
-const client = getClient({
-    token: process.env.CYCLE_API_TOKEN,
-});
+const client = getClient();
 
 const resp = await client.GET("/v1/container/instances", {
     params: {
