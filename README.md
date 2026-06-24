@@ -49,6 +49,79 @@ const client = getClient({
 });
 ```
 
+### Streaming Notifications
+
+Beyond REST requests, the internal API exposes a **notification pipeline**: a one-way streaming WebSocket over the same Unix socket that pushes real-time notifications as things happen on the hub. Each message identifies a single event: its `topic`, the `object` it concerns, and a `context` of related resource IDs. Use the REST client to fetch fuller detail when a notification warrants it.
+
+It authenticates with the `CYCLE_API_TOKEN` environment variable by default, just like `getClient`.
+
+```ts
+import { NotificationSocket } from "@cycleplatform/internal-api-client";
+
+const socket = new NotificationSocket();
+
+socket.on("open", () => console.log("OPEN"));
+socket.on("notification", (n) => console.log("NOTIFICATION:", n));
+socket.on("error", (err) => console.error("ERROR:", err.message));
+socket.on("close", (code, reason) => console.log("CLOSE:", code, reason));
+
+socket.connect();
+```
+
+Attach your listeners _before_ calling `connect()`. `NotificationSocket` is a Node `EventEmitter`, and an emitted `error` with no listener attached will throw.
+
+A received notification looks like this:
+
+```json
+{
+    "topic": "environment.deployments.reconfigured",
+    "object": { "id": "68518ade194b15be6bfd0a1e" },
+    "context": {
+        "label": null,
+        "hub_id": "5a14ddd8b6393d0001976f44",
+        "account_id": null,
+        "environments": [
+            "68518ade194b15be6bfd0a1e",
+            "6813cd199cb8434cb64067c9"
+        ],
+        "dns_zones": null,
+        "clusters": ["production"],
+        "containers": null,
+        "virtual_machines": null
+    }
+}
+```
+
+Call `socket.close()` to disconnect and stop reconnecting. The `socket.connected` getter reports whether the underlying socket is currently open.
+
+If you just want to connect with the defaults, `connectNotifications(options)` constructs and connects in a single call, returning the socket:
+
+```ts
+import { connectNotifications } from "@cycleplatform/internal-api-client";
+
+const socket = connectNotifications();
+socket.on("notification", (n) => console.log(n));
+```
+
+### Reading Environment Metadata
+
+Cycle mounts a metadata file inside every instance describing its environment: the environment ID, deployment tags, private network, and active services. `getEnvironmentMetadata()` reads and parses that file for you.
+
+It returns a `Result` (`{ data, error }`) so check `error` before using `data`:
+
+```ts
+import { getEnvironmentMetadata } from "@cycleplatform/internal-api-client";
+
+const { data, error } = await getEnvironmentMetadata();
+if (error) {
+    console.error("failed to read environment metadata:", error.message);
+} else {
+    console.log(data.id, data.services);
+}
+```
+
+See [Environment Metadata File](https://cycle.io/docs/platform/container-environment-variables#environment-metadata-file) for the full field reference.
+
 ## Development
 
 ### Cloning submodules

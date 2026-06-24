@@ -2,9 +2,10 @@
     "name": "@cycleplatform/internal-api-client",
     "version": "0.1.2",
     "description": "A Cycle API client for the internal API inside a container on Cycle.",
-    "main": "./dist/index.umd.cjs",
+    "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "type": "module",
+    "sideEffects": false,
     "exports": {
         ".": {
             "import": {
@@ -13,7 +14,7 @@
             },
             "require": {
                 "types": "./dist/index.d.ts",
-                "default": "./dist/index.umd.cjs"
+                "default": "./dist/index.cjs"
             }
         }
     },

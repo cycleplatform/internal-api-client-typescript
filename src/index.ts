@@ -2,6 +2,8 @@ import createClient from "openapi-fetch";
 import { Agent, fetch as undiciFetch } from "undici";
 import type { components, operations, paths } from "./generated/types";
 
+export * from "./metadata";
+export * from "./notifications/socket";
 export type { components, operations, paths };
 
 export function getClient({
